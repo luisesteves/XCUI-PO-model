@@ -20,5 +20,7 @@ class UITestCase: XCTestCase {
     override func tearDown() {
         loginScreen = nil
         welcomeScreen = nil
+
+        super.tearDown()
     }
 }
