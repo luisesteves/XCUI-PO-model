@@ -1,21 +1,15 @@
 import Foundation
-import XCTest_Gherkin
-import XCTest
 
-class LoginSteps: StepDefiner {
+class LoginSteps: UIStepDefiner {
     
     override func defineSteps()
-    {
-        guard let tester = test as? UITestCase else {
-            return
-        }
-        
+    {   
         step("I am in the login screen") {
-            tester.loginScreen.await()
+            self.tester.loginScreen.await()
         }
         
         step("I touch the login button") {
-            tester.loginScreen.makeLogin()
+            self.tester.loginScreen.makeLogin()
         }
     }
 }
