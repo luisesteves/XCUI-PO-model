@@ -12,15 +12,16 @@ class LoginScreen: Screen, PageObject {
         return app.collectionViews[accLabelScreen]
     }
     
-    func await() {
-        waitFor(element: Constants.accLabelScreen)
-        XCTAssertTrue(elementLoginScreen.exists)
+    override init(uiTestCase: UITestCase) {
+        super.init(uiTestCase: uiTestCase)
+        elementScreen = app.collectionViews[Constants.accLabelScreen]
     }
     
     func validate() {
-        //some code here
+        //your validations
     }
     
+    //MARK: Screen interations
     func makeLogin() {
         app.buttons[Constants.accLabelLoginButton].tap()
     }

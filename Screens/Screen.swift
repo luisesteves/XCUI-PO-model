@@ -1,22 +1,31 @@
 import Foundation
 import XCTest
 
+
+enum ScreenType {
+    case welcome
+    case login
+}
+
 class Screen {
     let app: XCUIApplication
-    let UITestCaseReference: UITestCase
+    private weak var uiTestCase: UITestCase?
     
-    private let accLabelGoBack = "Back"
+    var elementScreen: XCUIElement
     
-    private var elementGoBack: XCUIElement {
-        return app.navigationBars.buttons[accLabelGoBack]
+    init(uiTestCase: UITestCase) {
+        self.app = uiTestCase.app
+        self.uiTestCase = uiTestCase
+        elementScreen = app.windows.element(boundBy: 0)
     }
     
-    public init(_ UITestCaseReference: UITestCase) {
-        self.app = UITestCaseReference.app
-        self.UITestCaseReference = UITestCaseReference
+    func scrollTo(element: XCUIElement) {
+        while !visibility(of: element) {
+            swipe(inDirection: .up)
+        }
     }
     
-    func getVisibilityOf(element: XCUIElement) -> Bool {
+    func visibility(of element: XCUIElement) -> Bool {
         guard element.exists && !element.frame.isEmpty else {
             return false
         }
@@ -24,9 +33,42 @@ class Screen {
         return app.windows.element(boundBy: 0).frame.contains(element.frame)
     }
     
-    func waitFor(element: XCUIElement, timeout: Int = 5) {
+    func wait(for element: XCUIElement, timeout: Int = 5) {
         let existsPredidate = NSPredicate(format: "exists == true")
-        UITestCaseReference.expectation(for: existsPredidate, evaluatedWith: element, handler: nil)
-        UITestCaseReference.waitForExpectations(timeout: TimeInterval(timeout), handler: nil)
+        guard let uiTestCase = uiTestCase else {
+            assertionFailure("UITestCase not defined")
+            return
+        }
+        uiTestCase.expectation(for: existsPredidate, evaluatedWith: element, handler: nil)
+        uiTestCase.waitForExpectations(timeout: TimeInterval(timeout), handler: nil)
+    }
+    
+    func currentPage() -> Bool {
+        return elementScreen.exists
+    }
+    
+    func await() {
+        wait(for: elementScreen)
+        XCTAssertTrue(elementScreen.exists, "Screen not found")
+    }
+    
+    enum SwipeDirection {
+        case up
+        case down
+        case left
+        case right
+    }
+    
+    func swipe(inDirection: SwipeDirection) {
+        switch inDirection {
+        case .up:
+            elementScreen.swipeUp()
+        case .down:
+            elementScreen.swipeDown()
+        case .left:
+            elementScreen.swipeLeft()
+        case .right:
+            elementScreen.swipeRight()
+        }
     }
 }

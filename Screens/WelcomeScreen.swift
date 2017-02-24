@@ -12,12 +12,18 @@ class WelcomeScreen: Screen, PageObject {
         return app.collectionViews[Constants.accLabelScreen]
     }
     
-    func await() {
-        waitFor(element: Constants.accLabelScreen)
-        XCTAssertTrue(elementLoginScreen.exists)
+    override init(uiTestCase: UITestCase) {
+        super.init(uiTestCase: uiTestCase)
+        elementScreen = app.collectionViews[Constants.accLabelScreen]
     }
     
     func validate() {
-
+        //your validations
+    }
+    
+    //MARK: Screen interations
+    
+    func setMy(username: String) {
+        
     }
 }
